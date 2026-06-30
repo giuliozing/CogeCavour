@@ -1,0 +1,39 @@
+# # av:Toolbar
+SetEnv AV_TOOLBAR 0
+
+# # av:php5-engine
+AddHandler av-php73 .php
+
+# av:PHP-upload
+php_value upload_max_filesize 20M
+php_value post_max_size 20M
+php_value max_input_time 300
+# PHP-upload
+
+<IfModule mod_rewrite.c>
+    <IfModule mod_negotiation.c>
+        Options -MultiViews -Indexes
+    </IfModule>
+
+    RewriteEngine On
+    RewriteBase /
+
+    # Handle Authorization Header
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+    # Redirect Trailing Slashes If Not A Folder...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} (.+)/$
+    RewriteRule ^ %1 [L,R=301]
+
+    # Send Requests To Laravel
+    RewriteCond %{REQUEST_URI} ^/public/api/ [NC]
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ index.php [QSA,L] 
+
+    # Rules for React
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ index.html [QSA,L]    
+</IfModule>
